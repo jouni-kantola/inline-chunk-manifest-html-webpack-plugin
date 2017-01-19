@@ -1,0 +1,23 @@
+{
+  "name": "inline-chunk-manifest-html-webpack-plugin",
+  "version": "0.0.1",
+  "description": "Inline webpack chunk manifest in HEAD. Use together with html-webpack-plugin, chunk-manifest-webpack-plugin and inline-manifest-webpack-plugin.",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "manifest"
+  ],
+  "author": "Jouni Kantola <jouni@kantola.se> (https://github.com/jouni-kantola)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin#readme"
+}
