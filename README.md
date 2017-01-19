@@ -1,8 +1,8 @@
 # Inline Chunk Manifest HTML Webpack Plugin
-Inline chunk manifest plugin in `head`. Use together with `html-webpack-plugin`, `chunk-manifest-webpack-plugin` and `inline-manifest-webpack-plugin`.
+Plugin to inline webpack chunk manifest in `head`. Use together with `html-webpack-plugin`, `chunk-manifest-webpack-plugin` and `inline-manifest-webpack-plugin`.
 
 ## Usage
-At the moment I think the use case is quite narrow. By all means, go ahead and consume it, if you want to.
+At the moment I think the use case is quite narrow. However, go ahead and use it, if you want to.
 
 Install via npm
 ```json
