@@ -1,15 +1,12 @@
 # Inline Chunk Manifest HTML Webpack Plugin
-Plugin to inline webpack chunk manifest in `head`. Use together with `html-webpack-plugin`, `chunk-manifest-webpack-plugin` and `inline-manifest-webpack-plugin`.
+Plugin to inline webpack chunk manifest in `<head>`. Use together with `html-webpack-plugin`, `chunk-manifest-webpack-plugin` and `inline-manifest-webpack-plugin`.
 
 ## Usage
-At the moment I think the use case is quite narrow. However, go ahead and use it, if you want to.
+At the moment I think the use case is quite narrow. After I got feedback that there's use for this plugin, I decided to publish it to npm.
+If the plugin matches your needs, then by all means, go ahead and use the it :-)
 
-Install via npm
-```json
-"devDependencies": {
-    "inline-chunk-manifest-html-webpack-plugin": "git://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin.git#v0.0.1"
-}
-```
+### Install via npm
+`npm install inline-chunk-manifest-html-webpack-plugin --save-dev`
 
 ### webpack.config.js
 ```javascript
@@ -33,7 +30,7 @@ By default the chunk manifest options matches defaults from [chunk-manifest-webp
 If `filename` and/or `manifestFilename` is set for `ChunkManifestPlugin` match the config passed to `InlineChunkManifestHtmlWebpackPlugin`.
 
 ## Result
-Script tag assigning global variable injected in `head`.
+Script tag assigning global variable injected in `<head>`.
 ```html
 <head>
   <script>window.webpackManifest={"0":"0.bcca8d49c0f671a4afb6.dev.js","1":"1.6617d1b992b44b0996dc.dev.js"}</script>
