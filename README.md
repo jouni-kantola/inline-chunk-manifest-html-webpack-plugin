@@ -1,12 +1,53 @@
 # Inline Chunk Manifest HTML Webpack Plugin
-Plugin to inline webpack chunk manifest in `<head>`. Use together with `html-webpack-plugin`, `chunk-manifest-webpack-plugin` and `inline-manifest-webpack-plugin`.
+Extension plugin for `html-webpack-plugin` to inline webpack chunk manifest. Use together with:
+- `chunk-manifest-webpack-plugin` to extract chunks from manifest
+- `inline-manifest-webpack-plugin` to inline manifest (in contrast to chunk manifest, which this plugin does)
+
+## Example output
+Script tag assigning global variable injected in `<head>`.
+```html
+<head>
+  <script>window.webpackManifest={"0":"0.bcca8d49c0f671a4afb6.dev.js","1":"1.6617d1b992b44b0996dc.dev.js"}</script>
+</head>
+```
 
 ## Usage
-At the moment I think the use case is quite narrow. After I got feedback that there's use for this plugin, I decided to publish it to npm.
-If the plugin matches your needs, then by all means, go ahead and use the it :-)
 
-### Install via npm
-`npm install inline-chunk-manifest-html-webpack-plugin --save-dev`
+### Install via npm/yarn
+- `npm install inline-chunk-manifest-html-webpack-plugin --save-dev`
+- `yarn add inline-chunk-manifest-html-webpack-plugin --dev`
+
+### Config
+```javascript
+const inlineChunkManifestConfig = {
+  filename: 'manifest.json', // manifest.json is default and matches chunk-manifest-webpack-plugin
+  manifestVariable: 'webpackManifest', // webpackManifest is default and matches chunk-manifest-webpack-plugin
+  chunkManifestVariable: 'webpackChunkManifest' // output webpack chunk manifest, to be used in html-webpack-plugin template
+};
+
+new InlineChunkManifestHtmlWebpackPlugin(inlineChunkManifestConfig)
+```
+
+By default the chunk manifest options matches defaults from [chunk-manifest-webpack-plugin](https://github.com/soundcloud/chunk-manifest-webpack-plugin).
+If `filename` and/or `manifestFilename` is set for `ChunkManifestPlugin` match the config passed to `InlineChunkManifestHtmlWebpackPlugin`.
+
+Default chunk manifest is inlined into the head tag. When option `inject: false` is passed to `html-webpack-plugin` the content of the chunk manifest can be inlined matching the config option `chunkManifestVariable`.
+
+Example template for `html-webpack-plugin`:
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <h1>My web site</h1>
+    <%=htmlWebpackPlugin.files.webpackChunkManifest%>
+    <%=htmlWebpackPlugin.files.webpackManifest%>
+  </body>
+</html>
+```
 
 ### webpack.config.js
 ```javascript
@@ -19,20 +60,11 @@ module.exports = {
     new HtmlWebpackPlugin({
         template: './index-template.ejs'
     }),
-    new InlineChunkManifestHtmlWebpackPlugin(), // match { filename, manifestVariable } with ChunkManifestPlugin
+    // InlineChunkManifestHtmlWebpackPlugin defaults to:
+    // { filename: 'manifest.json', manifestVariable: 'webpackManifest', chunkManifestVariable: 'webpackChunkManifest' }
+    // match { filename, manifestVariable } with ChunkManifestPlugin
+    new InlineChunkManifestHtmlWebpackPlugin(),
     new InlineManifestPlugin()
   ]
 };
-```
-
-### Config
-By default the chunk manifest options matches defaults from [chunk-manifest-webpack-plugin](https://github.com/soundcloud/chunk-manifest-webpack-plugin).
-If `filename` and/or `manifestFilename` is set for `ChunkManifestPlugin` match the config passed to `InlineChunkManifestHtmlWebpackPlugin`.
-
-## Result
-Script tag assigning global variable injected in `<head>`.
-```html
-<head>
-  <script>window.webpackManifest={"0":"0.bcca8d49c0f671a4afb6.dev.js","1":"1.6617d1b992b44b0996dc.dev.js"}</script>
-</head>
 ```
