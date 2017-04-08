@@ -29,7 +29,7 @@ module.exports = {
         template: './index-template.ejs'
     }),
     // InlineChunkManifestHtmlWebpackPlugin defaults to:
-    // { filename: 'manifest.json', manifestVariable: 'webpackManifest', chunkManifestVariable: 'webpackChunkManifest' }
+    // { filename: 'manifest.json', manifestVariable: 'webpackManifest', chunkManifestVariable: 'webpackChunkManifest', dropAsset: false }
     // match { filename, manifestVariable } with ChunkManifestPlugin
     new InlineChunkManifestHtmlWebpackPlugin(),
     new InlineManifestPlugin()
@@ -43,6 +43,7 @@ const inlineChunkManifestConfig = {
   filename: 'manifest.json', // manifest.json is default; matches chunk-manifest-webpack-plugin
   manifestVariable: 'webpackManifest', // webpackManifest is default; matches chunk-manifest-webpack-plugin
   chunkManifestVariable: 'webpackChunkManifest' // webpackChunkManifest is default; use in html-webpack-plugin template
+  dropAsset: true // false is default; use to skip output of the chunk manifest asset (removes manifest.json)
 };
 
 new InlineChunkManifestHtmlWebpackPlugin(inlineChunkManifestConfig)
