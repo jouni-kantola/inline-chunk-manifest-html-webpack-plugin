@@ -1,7 +1,7 @@
 {
   "name": "inline-chunk-manifest-html-webpack-plugin",
   "version": "1.0.0",
-  "description": "Plugin to inline webpack chunk manifest. Default inlines in head tag. Use together with html-webpack-plugin, chunk-manifest-webpack-plugin and inline-manifest-webpack-plugin.",
+  "description": "Extension plugin for html-webpack-plugin to inline webpack chunk manifest. Default inlines in head tag.",
   "main": "./src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
