@@ -1,51 +1,78 @@
-function InlineChunkManifestHtmlWebpackPlugin(options) {
+const ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
+
+class InlineChunkManifestHtmlWebpackPlugin {
+  constructor(options) {
     options = options || {};
+
     this.manifestFilename = options.filename || "manifest.json";
     this.manifestVariable = options.manifestVariable || "webpackManifest";
-    this.chunkManifestVariable = options.chunkManifestVariable || "webpackChunkManifest";
+    this.chunkManifestVariable = options.chunkManifestVariable ||
+      "webpackChunkManifest";
     this.dropAsset = options.dropAsset || false;
-}
 
-InlineChunkManifestHtmlWebpackPlugin.prototype.apply = function (compiler) {
+    this.plugins = [
+      new ChunkManifestPlugin({
+        filename: this.manifestFilename,
+        manifestVariable: this.manifestVariable
+      })
+    ];
+  }
+
+  apply(compiler) {
+    this.applyDependencyPlugins(compiler);
+
     const manifestFilename = this.manifestFilename;
     const manifestVariable = this.manifestVariable;
     const chunkManifestVariable = this.chunkManifestVariable;
     const dropAsset = this.dropAsset;
 
-    compiler.plugin("compilation", function (compilation) {
-        compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
-            const asset = compilation.assets[manifestFilename];
+    compiler.plugin("compilation", compilation => {
+      compilation.plugin(
+        "html-webpack-plugin-alter-asset-tags",
+        (htmlPluginData, callback) => {
+          const asset = compilation.assets[manifestFilename];
 
-            if (asset) {
-                const newTag = {
-                    tagName: 'script',
-                    closeTag: true,
-                    attributes: {
-                        type: 'text/javascript'
-                    },
-                    innerHTML: `window.${manifestVariable}=${asset.source()}`
-                };
+          if (asset) {
+            const newTag = {
+              tagName: "script",
+              closeTag: true,
+              attributes: {
+                type: "text/javascript"
+              },
+              innerHTML: `window.${manifestVariable}=${asset.source()}`
+            };
 
-                htmlPluginData.head.unshift(newTag);
+            htmlPluginData.head.unshift(newTag);
 
-                if(dropAsset) {
-                    delete compilation.assets[manifestFilename];
-                }
+            if (dropAsset) {
+              delete compilation.assets[manifestFilename];
             }
+          }
 
-            callback(null, htmlPluginData);
-        });
+          callback(null, htmlPluginData);
+        }
+      );
 
-        compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
-            const asset = compilation.assets[manifestFilename];
+      compilation.plugin(
+        "html-webpack-plugin-before-html-generation",
+        (htmlPluginData, callback) => {
+          const asset = compilation.assets[manifestFilename];
 
-            if (asset) {
-                htmlPluginData.assets[chunkManifestVariable] = `<script type="text/javascript">window.${manifestVariable}=${asset.source()}</script>`;
-            }
+          if (asset) {
+            htmlPluginData.assets[
+              chunkManifestVariable
+            ] = `<script type="text/javascript">window.${manifestVariable}=${asset.source()}</script>`;
+          }
 
-            callback(null, htmlPluginData);
-        });
+          callback(null, htmlPluginData);
+        }
+      );
     });
-};
+  }
+
+  applyDependencyPlugins(compiler) {
+    this.plugins.forEach(plugin => plugin.apply.call(plugin, compiler));
+  }
+}
 
 module.exports = InlineChunkManifestHtmlWebpackPlugin;
