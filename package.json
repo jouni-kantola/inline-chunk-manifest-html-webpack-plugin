@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Extension plugin for html-webpack-plugin to inline webpack chunk manifest. Default inlines in head tag.",
   "main": "./src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jouni-kantola/inline-chunk-manifest-html-webpack-plugin.git"
@@ -23,7 +20,49 @@
   "files": [
     "src"
   ],
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "eslint": "^3.19.0",
+    "eslint-plugin-prettier": "^2.0.1",
+    "husky": "^0.13.3",
+    "lint-staged": "^3.4.0",
+    "nyc": "^10.2.0",
+    "prettier": "^1.1.0"
+  },
   "dependencies": {
     "chunk-manifest-webpack-plugin": "^1.0.0"
+  },
+  "scripts": {
+    "lint": "node_modules/.bin/eslint ./src",
+    "test": "ava test/*-test.js",
+    "coverage": "node_modules/.bin/nyc --check-coverage npm test",
+    "qa": "npm run lint & npm run coverage",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "nyc": {
+    "watermarks": {
+      "lines": [
+        80,
+        95
+      ],
+      "functions": [
+        80,
+        95
+      ],
+      "branches": [
+        80,
+        95
+      ],
+      "statements": [
+        80,
+        95
+      ]
+    }
   }
 }
