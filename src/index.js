@@ -8,8 +8,8 @@ class InlineChunkManifestHtmlWebpackPlugin {
 
     this.manifestFilename = options.filename || "manifest.json";
     this.manifestVariable = options.manifestVariable || "webpackManifest";
-    this.chunkManifestVariable = options.chunkManifestVariable ||
-      "webpackChunkManifest";
+    this.chunkManifestVariable =
+      options.chunkManifestVariable || "webpackChunkManifest";
     this.dropAsset = options.dropAsset || false;
 
     this.plugins = [
