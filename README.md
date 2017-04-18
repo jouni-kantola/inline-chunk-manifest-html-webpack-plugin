@@ -2,6 +2,8 @@
 Extension plugin for `html-webpack-plugin` to inline webpack chunk manifest. Default inlines in head tag.
 Standing on shoulders of giants, by using [chunk-manifest-webpack-plugin](https://github.com/soundcloud/chunk-manifest-webpack-plugin) internally to extract chunks from manifest.
 
+[![Build Status](https://travis-ci.org/jouni-kantola/inline-chunk-manifest-html-webpack-plugin.svg?branch=master)](https://travis-ci.org/jouni-kantola/inline-chunk-manifest-html-webpack-plugin)
+
 ## Example output
 Script tag to assign global webpack manifest variable, injected in `<head>`.
 ```html
