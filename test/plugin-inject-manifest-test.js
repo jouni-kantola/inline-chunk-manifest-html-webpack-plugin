@@ -27,20 +27,20 @@ test.cb("inject manifest in head", t => {
     }
   };
 
-  const pluginEvent = (compilerEvent, compile) => {
-    t.is(compilerEvent, "compilation");
+  const pluginEvent = (event, compile) => {
+    if (event === "compilation") {
+      const assets = {};
+      assets[manifestFilename] = {
+        source: () => manifestFileContent
+      };
 
-    const assets = {};
-    assets[manifestFilename] = {
-      source: () => manifestFileContent
-    };
+      const compilation = {
+        plugin: compilationPluginEvent,
+        assets: assets
+      };
 
-    const compilation = {
-      plugin: compilationPluginEvent,
-      assets: assets
-    };
-
-    compile(compilation);
+      compile(compilation);
+    }
   };
 
   const fakeCompiler = { plugin: pluginEvent };
