@@ -20,31 +20,20 @@ test.cb("keep asset", t => {
 });
 
 function isDropped(dropAsset, callback) {
-  const assets = {};
-  assets[manifestFilename] = {
+  const compilation = {
+    assets: {}
+  };
+  compilation.assets[manifestFilename] = {
     source: () => manifestFileContent
   };
 
-  const compilationPluginEvent = (compilationEvent, alterAssets) => {
-    if (compilationEvent === "html-webpack-plugin-alter-asset-tags") {
-      const htmlPluginData = {
-        head: []
-      };
-
-      alterAssets(htmlPluginData, (_, result) => {
-        const asset = assets[manifestFilename];
+  const pluginEvent = (event, emit) => {
+    if (event === "emit") {
+      emit(compilation, () => {
+        const asset = compilation.assets[manifestFilename];
         callback(asset);
       });
     }
-  };
-
-  const pluginEvent = (compilerEvent, compile) => {
-    const compilation = {
-      plugin: compilationPluginEvent,
-      assets: assets
-    };
-
-    compile(compilation);
   };
 
   const fakeCompiler = { plugin: pluginEvent };
