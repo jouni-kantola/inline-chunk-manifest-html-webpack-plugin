@@ -63,7 +63,53 @@ Example template for `html-webpack-plugin`:
   <body>
     <h1>My web site</h1>
     <%=htmlWebpackPlugin.files.webpackChunkManifest%>
-    <%=htmlWebpackPlugin.files.webpackManifest%>
   </body>
 </html>
+```
+
+### Override default chunk manifest plugin
+To use plugins like [webpack-manifest-plugin](https://github.com/danethurber/webpack-manifest-plugin) you can override the default plugin used to extract the webpack chunk manifest. To do this, you can do either of below configs:
+
+`inline-chunk-manifest-html-webpack-plugin` apply dependency plugins:
+```javascript
+const InlineChunkManifestHtmlWebpackPlugin = require('inline-chunk-manifest-html-webpack-plugin');
+
+module.exports = {
+  /* webpack config */
+  plugins: [
+    /* more plugins goes here */
+
+    new InlineChunkManifestHtmlWebpackPlugin({
+      manifestPlugins: [
+        new WebpackManifestPlugin()
+      ],
+      manifestVariable: "manifest"
+    }),
+    new HtmlWebpackPlugin({
+        template: './index-template.ejs'
+    })
+    /* more plugins goes here */
+  ]
+};
+```
+
+Plugins applied separately:
+```javascript
+const InlineChunkManifestHtmlWebpackPlugin = require('inline-chunk-manifest-html-webpack-plugin');
+
+module.exports = {
+  /* webpack config */
+  plugins: [
+    /* more plugins goes here */
+    new WebpackManifestPlugin(),
+    new InlineChunkManifestHtmlWebpackPlugin({
+      manifestVariable: "manifest",
+      extractManifest: false
+    }),
+    new HtmlWebpackPlugin({
+        template: './index-template.ejs'
+    })
+    /* more plugins goes here */
+  ]
+};
 ```
