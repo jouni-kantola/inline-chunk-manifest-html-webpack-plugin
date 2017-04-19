@@ -1,6 +1,5 @@
 import test from "ava";
 import InlineChunkManifestHtmlWebpackPlugin from "../src/";
-import ChunkManifestPlugin from "chunk-manifest-webpack-plugin";
 
 test("plugin and dependency plugins has apply", t => {
   const plugin = new InlineChunkManifestHtmlWebpackPlugin();
