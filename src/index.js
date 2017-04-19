@@ -12,12 +12,24 @@ class InlineChunkManifestHtmlWebpackPlugin {
       options.chunkManifestVariable || "webpackChunkManifest";
     this.dropAsset = options.dropAsset || false;
 
-    this.plugins = [
+    const manifestPlugins = options.manifestPlugins;
+
+    if (manifestPlugins && !Array.isArray(manifestPlugins)) {
+      throw new TypeError(
+        "Overriden manifest plugin(s) must be specified as array; [new Plugin1(), new Plugin1(), ...]"
+      );
+    }
+
+    const defaultManifestPlugins = [
       new ChunkManifestPlugin({
         filename: this.manifestFilename,
         manifestVariable: this.manifestVariable
       })
     ];
+
+    this.plugins = manifestPlugins && manifestPlugins.length
+      ? manifestPlugins
+      : defaultManifestPlugins;
   }
 
   apply(compiler) {
