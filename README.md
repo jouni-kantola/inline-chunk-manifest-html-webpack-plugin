@@ -41,7 +41,8 @@ const inlineChunkManifestConfig = {
   filename: 'manifest.json', // manifest.json is default
   manifestVariable: 'webpackManifest', // webpackManifest is default
   chunkManifestVariable: 'webpackChunkManifest', // webpackChunkManifest is default; use in html-webpack-plugin template
-  dropAsset: true // false is default; use to skip output of the chunk manifest asset (removes manifest.json)
+  dropAsset: true, // false is default; use to skip output of the chunk manifest asset (removes manifest.json)
+  manifestPlugins: [/* override default chunk manifest plugin(s) */]
 };
 
 new InlineChunkManifestHtmlWebpackPlugin(inlineChunkManifestConfig)

@@ -53,3 +53,36 @@ test("override chunk manifest variable", t => {
 
   t.is(plugin.chunkManifestVariable, "another-variable");
 });
+
+test("fallback to default chunk manifest plugin", t => {
+  const plugin = new InlineChunkManifestHtmlWebpackPlugin({
+    manifestPlugins: []
+  });
+
+  t.is(plugin.plugins.length, 1);
+  t.true(plugin.plugins[0] instanceof ChunkManifestPlugin);
+});
+
+test("ensure overriden plugins handle apply", t => {
+  const manifestPlugin = { override: true, apply: () => {} };
+  const anotherManifestPlugin = { override: true, apply: () => {} };
+
+  const plugin = new InlineChunkManifestHtmlWebpackPlugin({
+    manifestPlugins: [manifestPlugin, anotherManifestPlugin]
+  });
+
+  t.deepEqual(plugin.plugins, [manifestPlugin, anotherManifestPlugin]);
+});
+
+test("array of plugins required", t => {
+  const error = t.throws(() => {
+    const plugin = new InlineChunkManifestHtmlWebpackPlugin({
+      manifestPlugins: 1
+    });
+  }, TypeError);
+
+  t.is(
+    error.message,
+    "Overriden manifest plugin(s) must be specified as array; [new Plugin1(), new Plugin1(), ...]"
+  );
+});

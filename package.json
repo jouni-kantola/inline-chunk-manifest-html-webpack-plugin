@@ -1,6 +1,6 @@
 {
   "name": "inline-chunk-manifest-html-webpack-plugin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Extension plugin for html-webpack-plugin to inline webpack chunk manifest. Default inlines in head tag.",
   "main": "./src/index.js",
   "repository": {
