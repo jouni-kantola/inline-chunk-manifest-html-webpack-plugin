@@ -12,6 +12,17 @@ class InlineChunkManifestHtmlWebpackPlugin {
       options.chunkManifestVariable || "webpackChunkManifest";
     this.dropAsset = options.dropAsset || false;
 
+    if (
+      options.extractManifest != null &&
+      typeof options.extractManifest !== "boolean"
+    ) {
+      throw new TypeError("Extract manifest must be boolean");
+    }
+
+    this.extractManifest = options.extractManifest != null
+      ? options.extractManifest
+      : true;
+
     const manifestPlugins = options.manifestPlugins;
 
     if (manifestPlugins && !Array.isArray(manifestPlugins)) {
@@ -89,7 +100,9 @@ class InlineChunkManifestHtmlWebpackPlugin {
   }
 
   applyDependencyPlugins(compiler) {
-    this.plugins.forEach(plugin => plugin.apply.call(plugin, compiler));
+    if (this.extractManifest) {
+      this.plugins.forEach(plugin => plugin.apply.call(plugin, compiler));
+    }
   }
 }
 

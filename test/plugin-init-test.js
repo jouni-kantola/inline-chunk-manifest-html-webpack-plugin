@@ -26,6 +26,30 @@ test("override drop asset", t => {
   t.is(plugin.dropAsset, true);
 });
 
+test("extract manifest as boolean", t => {
+  const error = t.throws(() => {
+    const plugin = new InlineChunkManifestHtmlWebpackPlugin({
+      extractManifest: 1
+    });
+  }, TypeError);
+
+  t.is(error.message, "Extract manifest must be boolean");
+});
+
+test("default extract manifest", t => {
+  const plugin = new InlineChunkManifestHtmlWebpackPlugin();
+
+  t.is(plugin.extractManifest, true);
+});
+
+test("disable plugins", t => {
+  const plugin = new InlineChunkManifestHtmlWebpackPlugin({
+    extractManifest: false
+  });
+
+  t.is(plugin.extractManifest, false);
+});
+
 test("override manifest filename", t => {
   const plugin = new InlineChunkManifestHtmlWebpackPlugin({
     filename: "another.file"
