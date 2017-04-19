@@ -40,6 +40,14 @@ class InlineChunkManifestHtmlWebpackPlugin {
     const chunkManifestVariable = this.chunkManifestVariable;
     const dropAsset = this.dropAsset;
 
+    compiler.plugin("emit", (compilation, callback) => {
+      if (dropAsset) {
+        delete compilation.assets[manifestFilename];
+      }
+
+      callback();
+    });
+
     compiler.plugin("compilation", compilation => {
       compilation.plugin(
         "html-webpack-plugin-alter-asset-tags",
@@ -57,10 +65,6 @@ class InlineChunkManifestHtmlWebpackPlugin {
             };
 
             htmlPluginData.head.unshift(newTag);
-
-            if (dropAsset) {
-              delete compilation.assets[manifestFilename];
-            }
           }
 
           callback(null, htmlPluginData);
