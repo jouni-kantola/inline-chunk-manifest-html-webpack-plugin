@@ -30,7 +30,7 @@
     "prettier": "^1.1.0"
   },
   "dependencies": {
-    "chunk-manifest-webpack-plugin": "~1.0.0"
+    "chunk-manifest-webpack-plugin": "~1.1.2"
   },
   "scripts": {
     "lint": "node_modules/.bin/eslint ./src",
