@@ -76,7 +76,7 @@ class ChunkManifestPlugin {
         }
 
         return _.replace(
-          '"__CHUNK_MANIFEST__"',
+          /"__CHUNK_MANIFEST__"/,
           `window["${manifestVariable}"][${chunkIdVariableName}]`
         );
       });
