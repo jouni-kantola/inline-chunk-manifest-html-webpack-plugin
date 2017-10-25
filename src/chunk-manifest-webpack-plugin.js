@@ -43,6 +43,7 @@ class ChunkManifestPlugin {
             }
             return c.chunks.reduce(registerChunk, manifest);
           }, {});
+
           oldChunkFilename = this.outputOptions.chunkFilename;
           this.outputOptions.chunkFilename = "__CHUNK_MANIFEST__";
           // mark as asset for emitting
@@ -60,7 +61,7 @@ class ChunkManifestPlugin {
         _,
         chunk,
         hash,
-        chunkIdVar
+        chunkIdVariableName
       ) {
         if (oldChunkFilename) {
           this.outputOptions.chunkFilename = oldChunkFilename;
@@ -68,7 +69,7 @@ class ChunkManifestPlugin {
 
         return _.replace(
           '"__CHUNK_MANIFEST__"',
-          'window["' + manifestVariable + '"][' + chunkIdVar + "]"
+          `window["${manifestVariable}"][${chunkIdVariableName}]`
         );
       });
     });
