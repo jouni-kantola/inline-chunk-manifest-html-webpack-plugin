@@ -1,6 +1,6 @@
 "use strict";
 
-var RawSource = require("webpack-core/lib/RawSource");
+var RawSource = require("webpack-sources").RawSource;
 
 class ChunkManifestPlugin {
   constructor(options) {
