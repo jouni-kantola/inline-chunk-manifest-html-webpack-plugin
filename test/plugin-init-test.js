@@ -1,6 +1,6 @@
 import test from "ava";
 import InlineChunkManifestHtmlWebpackPlugin from "../src/";
-import ChunkManifestPlugin from "chunk-manifest-webpack-plugin";
+import ChunkManifestPlugin from "../src/chunk-manifest-webpack-plugin";
 
 test("has defaults", t => {
   const expected = {
