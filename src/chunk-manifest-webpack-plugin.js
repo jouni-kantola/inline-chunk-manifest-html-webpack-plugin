@@ -1,6 +1,6 @@
 "use strict";
 
-var RawSource = require("webpack-sources").RawSource;
+const RawSource = require("webpack-sources").RawSource;
 
 class ChunkManifestPlugin {
   constructor(options) {
@@ -10,23 +10,27 @@ class ChunkManifestPlugin {
   }
 
   apply(compiler) {
-    var manifestFilename = this.manifestFilename;
-    var manifestVariable = this.manifestVariable;
-    var oldChunkFilename;
-    var chunkManifest;
+    const manifestFilename = this.manifestFilename;
+    const manifestVariable = this.manifestVariable;
+    let oldChunkFilename;
 
     compiler.plugin("this-compilation", function(compilation) {
-      var mainTemplate = compilation.mainTemplate;
+      const mainTemplate = compilation.mainTemplate;
       mainTemplate.plugin("require-ensure", function(_, chunk, hash) {
-        var filename =
+        const filename =
           this.outputOptions.chunkFilename || this.outputOptions.filename;
 
         if (filename) {
-          chunkManifest = [chunk].reduce(function registerChunk(manifest, c) {
+          const chunkManifest = [chunk].reduce(function registerChunk(
+            manifest,
+            c
+          ) {
             if (c.id in manifest) return manifest;
-            var hasRuntime = typeof c.hasRuntime === "function"
+
+            const hasRuntime = typeof c.hasRuntime === "function"
               ? c.hasRuntime()
               : c.entry;
+
             if (hasRuntime) {
               manifest[c.id] = undefined;
             } else {
