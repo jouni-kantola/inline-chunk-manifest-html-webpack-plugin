@@ -1,3 +1,11 @@
+/**
+ * This dependency plugin is a fork of: 
+ * chunk-manifest-webpack-plugin (https://github.com/soundcloud/chunk-manifest-webpack-plugin)
+ * 
+ * inline-chunk-manifest-html-webpack-plugin already enables inlining webpack's chunk manifest,
+ * and therefor has been extracted.
+ */
+
 "use strict";
 
 const RawSource = require("webpack-sources").RawSource;
