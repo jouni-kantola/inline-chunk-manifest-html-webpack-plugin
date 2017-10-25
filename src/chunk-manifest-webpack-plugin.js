@@ -44,7 +44,6 @@ ChunkManifestPlugin.prototype.apply = function(compiler) {
         compilation.assets[manifestFilename] = new RawSource(
           JSON.stringify(chunkManifest)
         );
-        chunk.files.push(manifestFilename);
       }
 
       return _;
