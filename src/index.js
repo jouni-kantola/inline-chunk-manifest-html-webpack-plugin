@@ -1,6 +1,6 @@
 "use strict";
 
-const ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
+const ChunkManifestPlugin = require("./chunk-manifest-webpack-plugin");
 
 class InlineChunkManifestHtmlWebpackPlugin {
   constructor(options) {
