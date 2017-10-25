@@ -29,7 +29,9 @@
     "nyc": "^10.2.0",
     "prettier": "^1.1.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "webpack-sources": "^1.0.1"
+  },
   "scripts": {
     "lint": "node_modules/.bin/eslint ./src",
     "test": "ava test/*-test.js",
