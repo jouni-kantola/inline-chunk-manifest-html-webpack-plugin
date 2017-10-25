@@ -4,7 +4,6 @@ function ChunkManifestPlugin(options) {
   options = options || {};
   this.manifestFilename = options.filename || "manifest.json";
   this.manifestVariable = options.manifestVariable || "webpackManifest";
-  this.inlineManifest = options.inlineManifest || false;
 }
 module.exports = ChunkManifestPlugin;
 
@@ -12,7 +11,6 @@ ChunkManifestPlugin.prototype.constructor = ChunkManifestPlugin;
 ChunkManifestPlugin.prototype.apply = function(compiler) {
   var manifestFilename = this.manifestFilename;
   var manifestVariable = this.manifestVariable;
-  var inlineManifest = this.inlineManifest;
   var oldChunkFilename;
   var chunkManifest;
 
@@ -69,20 +67,5 @@ ChunkManifestPlugin.prototype.apply = function(compiler) {
         'window["' + manifestVariable + '"][' + chunkIdVar + "]"
       );
     });
-
-    if (inlineManifest) {
-      compilation.plugin("html-webpack-plugin-before-html-generation", function(
-        data,
-        callback
-      ) {
-        var manifestHtml =
-          "<script>window." +
-          manifestVariable +
-          "=" +
-          JSON.stringify(chunkManifest) +
-          "</script>";
-        callback(null, (data.assets[manifestVariable] = manifestHtml));
-      });
-    }
   });
 };
