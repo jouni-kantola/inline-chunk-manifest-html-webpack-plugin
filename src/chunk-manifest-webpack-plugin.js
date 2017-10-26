@@ -35,13 +35,10 @@ class ChunkManifestPlugin {
           ) {
             if (c.id in manifest) return manifest;
 
-            const hasRuntime =
-              typeof c.hasRuntime === "function" ? c.hasRuntime() : c.entry;
-
-            if (hasRuntime) {
+            if (c.hasRuntime()) {
               manifest[c.id] = undefined;
             } else {
-              manifest[c.id] = mainTemplate.applyPluginsWaterfall(
+              const asyncAssets = mainTemplate.applyPluginsWaterfall(
                 "asset-path",
                 filename,
                 {
@@ -49,6 +46,8 @@ class ChunkManifestPlugin {
                   chunk: c
                 }
               );
+
+              manifest[c.id] = asyncAssets;
             }
             return c.chunks.reduce(registerChunk, manifest);
           },
@@ -76,7 +75,6 @@ class ChunkManifestPlugin {
         if (oldChunkFilename) {
           this.outputOptions.chunkFilename = oldChunkFilename;
         }
-
         return _.replace(
           /"__CHUNK_MANIFEST__"/,
           `window["${manifestVariable}"][${chunkIdVariableName}]`
