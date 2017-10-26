@@ -35,22 +35,24 @@ class ChunkManifestPlugin {
           ) {
             if (c.id in manifest) return manifest;
 
-            const hasRuntime = typeof c.hasRuntime === "function"
-              ? c.hasRuntime()
-              : c.entry;
+            const hasRuntime =
+              typeof c.hasRuntime === "function" ? c.hasRuntime() : c.entry;
 
             if (hasRuntime) {
               manifest[c.id] = undefined;
             } else {
-              manifest[
-                c.id
-              ] = mainTemplate.applyPluginsWaterfall("asset-path", filename, {
-                hash: hash,
-                chunk: c
-              });
+              manifest[c.id] = mainTemplate.applyPluginsWaterfall(
+                "asset-path",
+                filename,
+                {
+                  hash: hash,
+                  chunk: c
+                }
+              );
             }
             return c.chunks.reduce(registerChunk, manifest);
-          }, {});
+          },
+          {});
 
           oldChunkFilename = this.outputOptions.chunkFilename;
           this.outputOptions.chunkFilename = "__CHUNK_MANIFEST__";

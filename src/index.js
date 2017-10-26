@@ -19,9 +19,8 @@ class InlineChunkManifestHtmlWebpackPlugin {
       throw new TypeError("Extract manifest must be boolean");
     }
 
-    this.extractManifest = options.extractManifest != null
-      ? options.extractManifest
-      : true;
+    this.extractManifest =
+      options.extractManifest != null ? options.extractManifest : true;
 
     const manifestPlugins = options.manifestPlugins;
 
@@ -38,9 +37,10 @@ class InlineChunkManifestHtmlWebpackPlugin {
       })
     ];
 
-    this.plugins = manifestPlugins && manifestPlugins.length
-      ? manifestPlugins
-      : defaultManifestPlugins;
+    this.plugins =
+      manifestPlugins && manifestPlugins.length
+        ? manifestPlugins
+        : defaultManifestPlugins;
   }
 
   apply(compiler) {
