@@ -24,7 +24,7 @@ class ChunkManifestPlugin {
 
     compiler.plugin("this-compilation", function(compilation) {
       const mainTemplate = compilation.mainTemplate;
-      mainTemplate.plugin("require-ensure", function(_, chunk, hash) {
+      mainTemplate.plugin("require-ensure", function(source, chunk, hash) {
         const filename =
           this.outputOptions.chunkFilename || this.outputOptions.filename;
 
@@ -61,13 +61,13 @@ class ChunkManifestPlugin {
           );
         }
 
-        return _;
+        return source;
       });
     });
 
     compiler.plugin("compilation", function(compilation) {
       compilation.mainTemplate.plugin("require-ensure", function(
-        _,
+        source,
         chunk,
         hash,
         chunkIdVariableName
@@ -75,10 +75,13 @@ class ChunkManifestPlugin {
         if (oldChunkFilename) {
           this.outputOptions.chunkFilename = oldChunkFilename;
         }
-        return _.replace(
+
+        const updatedSource = source.replace(
           /"__CHUNK_MANIFEST__"/,
           `window["${manifestVariable}"][${chunkIdVariableName}]`
         );
+
+        return updatedSource;
       });
     });
   }
