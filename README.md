@@ -1,5 +1,5 @@
 # Inline Chunk Manifest HTML Webpack Plugin
-Extension plugin for `html-webpack-plugin` to inline webpack's chunk manifest. Default inlines in head tag.
+Extension plugin for [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin) to inline webpack's chunk manifest. Defaults to inline in `<head>` tag.
 
 [![Build Status](https://travis-ci.org/jouni-kantola/inline-chunk-manifest-html-webpack-plugin.svg?branch=master)](https://travis-ci.org/jouni-kantola/inline-chunk-manifest-html-webpack-plugin)
 
