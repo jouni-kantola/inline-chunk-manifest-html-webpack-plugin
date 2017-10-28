@@ -42,7 +42,7 @@ class ChunkManifestPlugin {
             if (c.hasRuntime()) {
               manifest[c.id] = undefined;
             } else {
-              const asyncAssets = mainTemplate.applyPluginsWaterfall(
+              const assetFilename = mainTemplate.applyPluginsWaterfall(
                 "asset-path",
                 chunkFilename,
                 {
@@ -51,14 +51,15 @@ class ChunkManifestPlugin {
                 }
               );
 
-              manifest[c.id] = asyncAssets;
+              manifest[c.id] = assetFilename;
             }
+
             return c.chunks.reduce(registerChunk, manifest);
           },
           {});
 
           this.outputOptions.chunkFilename = "__CHUNK_MANIFEST__";
-          // mark as asset for emitting
+
           compilation.assets[manifestFilename] = new RawSource(
             JSON.stringify(chunkManifest)
           );
