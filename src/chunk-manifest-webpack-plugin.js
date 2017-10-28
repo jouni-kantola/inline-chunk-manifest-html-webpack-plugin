@@ -20,15 +20,19 @@ class ChunkManifestPlugin {
   apply(compiler) {
     const manifestFilename = this.manifestFilename;
     const manifestVariable = this.manifestVariable;
-    let oldChunkFilename;
+    let chunkFilename;
 
-    compiler.plugin("this-compilation", function(compilation) {
+    compiler.plugin("this-compilation", compilation => {
       const mainTemplate = compilation.mainTemplate;
-      mainTemplate.plugin("require-ensure", function(source, chunk, hash) {
-        const filename =
-          this.outputOptions.chunkFilename || this.outputOptions.filename;
+      mainTemplate.plugin("require-ensure", function(
+        source,
+        chunk,
+        hash
+        /*, chunkIdVariableName */
+      ) {
+        chunkFilename = this.outputOptions.chunkFilename;
 
-        if (filename) {
+        if (chunkFilename) {
           const chunkManifest = [chunk].reduce(function registerChunk(
             manifest,
             c
@@ -40,9 +44,9 @@ class ChunkManifestPlugin {
             } else {
               const asyncAssets = mainTemplate.applyPluginsWaterfall(
                 "asset-path",
-                filename,
+                chunkFilename,
                 {
-                  hash: hash,
+                  hash,
                   chunk: c
                 }
               );
@@ -53,7 +57,6 @@ class ChunkManifestPlugin {
           },
           {});
 
-          oldChunkFilename = this.outputOptions.chunkFilename;
           this.outputOptions.chunkFilename = "__CHUNK_MANIFEST__";
           // mark as asset for emitting
           compilation.assets[manifestFilename] = new RawSource(
@@ -65,15 +68,16 @@ class ChunkManifestPlugin {
       });
     });
 
-    compiler.plugin("compilation", function(compilation) {
-      compilation.mainTemplate.plugin("require-ensure", function(
+    compiler.plugin("compilation", compilation => {
+      const mainTemplate = compilation.mainTemplate;
+      mainTemplate.plugin("require-ensure", function(
         source,
         chunk,
         hash,
         chunkIdVariableName
       ) {
-        if (oldChunkFilename) {
-          this.outputOptions.chunkFilename = oldChunkFilename;
+        if (chunkFilename) {
+          this.outputOptions.chunkFilename = chunkFilename;
         }
 
         const updatedSource = source.replace(
