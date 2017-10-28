@@ -47,6 +47,5 @@ test.cb("replace runtime's chunk manifest with lookup", t => {
     manifestVariable
   });
 
-  plugin.plugins = [{ apply: () => {} }];
   plugin.apply(fakeCompiler);
 });
