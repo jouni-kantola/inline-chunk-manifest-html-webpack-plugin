@@ -7,10 +7,15 @@ class InlineChunkManifestHtmlWebpackPlugin {
     options = options || {};
 
     this.manifestFilename = options.filename || "manifest.json";
+    this.inject = options.inject !== false ? options.inject || 'head' : false;
     this.manifestVariable = options.manifestVariable || "webpackManifest";
     this.chunkManifestVariable =
       options.chunkManifestVariable || "webpackChunkManifest";
     this.dropAsset = options.dropAsset || false;
+    
+    if (options.inject !== false && !/^(body|head)$/.test(this.inject)) {
+      throw new TypeError("Option 'inject' must be false (do not inject), 'head', 'body', or not set (defaulting to 'head')");
+    }
 
     if (
       options.extractManifest != null &&
@@ -49,6 +54,7 @@ class InlineChunkManifestHtmlWebpackPlugin {
     const manifestFilename = this.manifestFilename;
     const manifestVariable = this.manifestVariable;
     const chunkManifestVariable = this.chunkManifestVariable;
+    const inject = this.inject;
     const dropAsset = this.dropAsset;
 
     compiler.plugin("emit", (compilation, callback) => {
@@ -65,7 +71,7 @@ class InlineChunkManifestHtmlWebpackPlugin {
         (htmlPluginData, callback) => {
           const asset = compilation.assets[manifestFilename];
 
-          if (asset) {
+          if (asset && inject) {
             const newTag = {
               tagName: "script",
               closeTag: true,
@@ -75,7 +81,7 @@ class InlineChunkManifestHtmlWebpackPlugin {
               innerHTML: `window.${manifestVariable}=${asset.source()}`
             };
 
-            htmlPluginData.head.unshift(newTag);
+            htmlPluginData[inject].unshift(newTag);
           }
 
           callback(null, htmlPluginData);
