@@ -7,42 +7,54 @@ test.cb("create asset", t => {
   const manifestVariable = "manifest-variable";
   const chunkManifestVariable = "chunk-manifest-variable";
 
-  const compilationPluginEvent = (compilationEvent, alterAssets) => {
-    if (compilationEvent === "html-webpack-plugin-before-html-generation") {
-      const htmlPluginData = {
-        assets: {}
-      };
+  const compilationPluginEvent = (name, alterAssets) => {
+    const htmlPluginData = {
+      assets: {}
+    };
 
-      alterAssets(htmlPluginData, (_, result) => {
-        const asset = htmlPluginData.assets[chunkManifestVariable];
+    alterAssets(htmlPluginData, (_, result) => {
+      const asset = htmlPluginData.assets[chunkManifestVariable];
 
-        t.is(
-          asset,
-          `<script type="text/javascript">window.${manifestVariable}=${manifestFileContent}</script>`
-        );
+      t.is(
+        asset,
+        `<script type="text/javascript">window.${manifestVariable}=${manifestFileContent}</script>`
+      );
 
-        t.end();
-      });
-    }
+      t.end();
+    });
   };
 
-  const pluginEvent = (event, compile) => {
-    if (event === "compilation") {
-      const assets = {};
-      assets[manifestFilename] = {
-        source: () => manifestFileContent
-      };
+  const pluginEvent = (name, compile) => {
+    const assets = {};
+    assets[manifestFilename] = {
+      source: () => manifestFileContent
+    };
 
-      const compilation = {
-        plugin: compilationPluginEvent,
-        assets: assets
-      };
+    const compilation = {
+      hooks: {
+        htmlWebpackPluginAlterAssetTags: {
+          tapAsync: () => {}
+        },
+        htmlWebpackPluginBeforeHtmlGeneration: {
+          tapAsync: compilationPluginEvent
+        }
+      },
+      assets: assets
+    };
 
-      compile(compilation);
-    }
+    compile(compilation);
   };
 
-  const fakeCompiler = { plugin: pluginEvent };
+  const fakeCompiler = {
+    hooks: {
+      emit: {
+        tapAsync: (name, handler) => {}
+      },
+      compilation: {
+        tap: pluginEvent
+      }
+    }
+  };
 
   const plugin = new InlineChunkManifestHtmlWebpackPlugin({
     filename: manifestFilename,

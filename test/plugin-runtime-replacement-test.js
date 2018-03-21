@@ -17,31 +17,44 @@ test.cb("replace runtime's chunk manifest with lookup", t => {
   let expected = [...runtimeSource];
   expected[1] = `window["${manifestVariable}"][${chunkIdVariableName}]`;
 
-  const compilationPluginEvent = (compilationEvent, ensure) => {
-    if (compilationEvent === "require-ensure") {
-      const updatedSource = ensure(
-        runtimeSource.join(""),
-        undefined,
-        undefined,
-        chunkIdVariableName
-      );
-      t.is(updatedSource, expected.join(""));
-      t.end();
-    }
+  const compilationPluginEvent = (name, ensure) => {
+    const updatedSource = ensure(
+      runtimeSource.join(""),
+      undefined,
+      undefined,
+      chunkIdVariableName
+    );
+    t.is(updatedSource, expected.join(""));
+    t.end();
   };
 
-  const pluginEvent = (event, compile) => {
-    if (event === "compilation") {
-      const compilation = {
-        mainTemplate: {
-          plugin: compilationPluginEvent
+  const pluginEvent = (name, compile) => {
+    const compilation = {
+      outputOptions: {
+        chunkFilename: ""
+      },
+      mainTemplate: {
+        hooks: {
+          requireEnsure: {
+            tap: compilationPluginEvent
+          }
         }
-      };
-      compile(compilation);
-    }
+      }
+    };
+
+    compile(compilation);
   };
 
-  const fakeCompiler = { plugin: pluginEvent };
+  const fakeCompiler = {
+    hooks: {
+      thisCompilation: {
+        tap: () => {}
+      },
+      compilation: {
+        tap: pluginEvent
+      }
+    }
+  };
 
   const plugin = new ChunkManifestPlugin({
     manifestVariable

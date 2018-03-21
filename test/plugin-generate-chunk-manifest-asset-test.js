@@ -12,14 +12,18 @@ test.cb("generate asset for chunk manifest", t => {
   const chunk = {
     id: 1,
     hasRuntime: () => true,
-    chunks: [
+    groupsIterable: [
       {
-        id: 2,
-        hasRuntime: () => false,
-        chunks: []
-      },
-      {
-        id: 2
+        chunks: [
+          {
+            id: 2,
+            hasRuntime: () => false,
+            groupsIterable: []
+          },
+          {
+            id: 2
+          }
+        ]
       }
     ]
   };
@@ -31,47 +35,49 @@ test.cb("generate asset for chunk manifest", t => {
     })
   );
 
-  const compilationPluginEvent = (compilationEvent, ensure) => {
-    if (compilationEvent === "require-ensure") {
-      ensure.apply(
-        {
-          outputOptions: {
-            chunkFilename: filenamePlaceholder
+  const compilationPluginEvent = (name, ensure) => {
+    ensure(undefined, chunk, "a1234");
+  };
+
+  const getAssetPath = (filename, data) => {
+    return filename.replace(
+      filenamePlaceholder,
+      `${data.chunk.id}-${data.hash}.js`
+    );
+  };
+
+  const pluginEvent = (name, compile) => {
+    const compilation = {
+      mainTemplate: {
+        hooks: {
+          requireEnsure: {
+            tap: compilationPluginEvent
           }
         },
-        [undefined, chunk, "a1234"]
-      );
+        getAssetPath
+      },
+      assets: {},
+      outputOptions: {
+        chunkFilename: filenamePlaceholder
+      }
+    };
+
+    compile(compilation);
+
+    t.deepEqual(compilation.assets, expected);
+    t.end();
+  };
+
+  const fakeCompiler = {
+    hooks: {
+      thisCompilation: {
+        tap: pluginEvent
+      },
+      compilation: {
+        tap: () => {}
+      }
     }
   };
-
-  const applyPluginsWaterfall = (event, filename, data) => {
-    if (event === "asset-path")
-      return filename.replace(
-        filenamePlaceholder,
-        `${data.chunk.id}-${data.hash}.js`
-      );
-
-    t.fail();
-  };
-
-  const pluginEvent = (event, compile) => {
-    if (event === "this-compilation") {
-      const compilation = {
-        mainTemplate: {
-          plugin: compilationPluginEvent,
-          applyPluginsWaterfall
-        },
-        assets: {}
-      };
-
-      compile(compilation);
-
-      t.deepEqual(compilation.assets, expected);
-      t.end();
-    }
-  };
-
-  const fakeCompiler = { plugin: pluginEvent };
 
   const plugin = new ChunkManifestPlugin({
     filename: manifestFilename
