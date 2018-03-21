@@ -12,7 +12,16 @@ test("plugin and dependency plugins has apply", t => {
 test.cb("dependency plugins are applied", t => {
   t.plan(2);
 
-  const fakeCompiler = { plugin: () => {} };
+  const fakeCompiler = {
+    hooks: {
+      emit: {
+        tapAsync: (name, handler) => {}
+      },
+      compilation: {
+        tap: (name, handler) => {}
+      }
+    }
+  };
 
   const dependencyPlugin = {
     apply: compiler => {
@@ -35,7 +44,16 @@ test.cb("dependency plugins are applied", t => {
 test.cb("overridden manifest plugins applied", t => {
   t.plan(2);
 
-  const fakeCompiler = { plugin: () => {} };
+  const fakeCompiler = {
+    hooks: {
+      emit: {
+        tapAsync: (name, handler) => {}
+      },
+      compilation: {
+        tap: (name, handler) => {}
+      }
+    }
+  };
 
   const dependencyPlugin = {
     apply: compiler => {

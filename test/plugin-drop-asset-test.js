@@ -27,16 +27,21 @@ function isDropped(dropAsset, callback) {
     source: () => manifestFileContent
   };
 
-  const pluginEvent = (event, emit) => {
-    if (event === "emit") {
-      emit(compilation, () => {
-        const asset = compilation.assets[manifestFilename];
-        callback(asset);
-      });
+  const fakeCompiler = {
+    hooks: {
+      emit: {
+        tapAsync: (name, handler) => {
+          handler(compilation, () => {
+            const asset = compilation.assets[manifestFilename];
+            callback(asset);
+          });
+        }
+      },
+      compilation: {
+        tap: (name, handler) => {}
+      }
     }
   };
-
-  const fakeCompiler = { plugin: pluginEvent };
 
   const plugin = new InlineChunkManifestHtmlWebpackPlugin({
     filename: manifestFilename,

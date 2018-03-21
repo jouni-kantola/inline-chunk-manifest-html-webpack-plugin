@@ -8,50 +8,69 @@ test.cb("generate asset for chunk manifest", t => {
   const chunk = {
     id: 1,
     hasRuntime: () => true,
-    chunks: []
+    chunks: [],
+    groupsIterable: []
   };
 
-  const thisCompilationPluginEvent = (compilationEvent, ensure) => {
-    if (compilationEvent === "require-ensure") {
-      const outputOptions = { chunkFilename };
-
-      ensure.apply({ outputOptions }, [undefined, chunk]);
-
-      t.is(outputOptions.chunkFilename, "__CHUNK_MANIFEST__");
-    }
+  const thisCompilationPluginEvent = (name, ensure) => {
+    ensure(undefined, chunk);
   };
 
-  const compilationPluginEvent = (compilationEvent, ensure) => {
-    if (compilationEvent === "require-ensure") {
-      const outputOptions = { chunkFilename: "overwrite-this" };
-
-      ensure.apply({ outputOptions }, ["", chunk]);
-
-      t.is(outputOptions.chunkFilename, chunkFilename);
-      t.end();
-    }
+  const compilationPluginEvent = (name, ensure) => {
+    ensure("", chunk);
   };
 
-  const pluginEvent = (event, compile) => {
+  const pluginThisCompilationEvent = (name, compile) => {
     const compilation = {
       mainTemplate: {
-        plugin: undefined
+        hooks: {
+          requireEnsure: {
+            tap: thisCompilationPluginEvent
+          }
+        }
+      },
+      outputOptions: {
+        chunkFilename
       },
       assets: {}
     };
 
-    if (event === "this-compilation") {
-      compilation.mainTemplate.plugin = thisCompilationPluginEvent;
-      compile(compilation);
-    }
+    compile(compilation);
 
-    if (event === "compilation") {
-      compilation.mainTemplate.plugin = compilationPluginEvent;
-      compile(compilation);
-    }
+    t.is(compilation.outputOptions.chunkFilename, "__CHUNK_MANIFEST__");
   };
 
-  const fakeCompiler = { plugin: pluginEvent };
+  const pluginCompilationEvent = (name, compile) => {
+    const compilation = {
+      mainTemplate: {
+        hooks: {
+          requireEnsure: {
+            tap: compilationPluginEvent
+          }
+        }
+      },
+      outputOptions: {
+        chunkFilename: "overwrite-this"
+      },
+      assets: {}
+    };
+
+    compile(compilation);
+
+    t.is(compilation.outputOptions.chunkFilename, chunkFilename);
+    t.end();
+  };
+
+  const fakeCompiler = {
+    hooks: {
+      thisCompilation: {
+        tap: pluginThisCompilationEvent
+      },
+      compilation: {
+        tap: pluginCompilationEvent
+      }
+    }
+  };
 
   const plugin = new ChunkManifestPlugin();
 
